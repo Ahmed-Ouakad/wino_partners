@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:wino_partners/feature/auth/presentation/screens/login_screen.dart';
 import 'package:wino_partners/feature/auth/presentation/screens/signup_screen.dart';
+import 'package:wino_partners/feature/home/presentation/screens/home_screen.dart';
+import 'package:wino_partners/feature/home/presentation/screens/main_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,7 +37,7 @@ class MyApp extends StatelessWidget {
           surfaceContainer: Color(0xFF2A2A2A),
         ),
       ),
-      home: const SignupScreen(),
+      home: const MainScreen(),
     );
   }
 }
