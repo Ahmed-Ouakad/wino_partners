@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
+import '../entities/auth_response.dart';
 import '../entities/login_vendor_params.dart';
 import '../repositories/auth_repository.dart';
 
@@ -10,7 +11,7 @@ class LoginVendorUseCase {
   const LoginVendorUseCase(this.repository);
 
   /// Executes the vendor authentication.
-  Future<Either<Failure, void>> call(LoginVendorParams params) async {
+  Future<Either<Failure, AuthResponse>> call(LoginVendorParams params) async {
     return await repository.loginVendor(params);
   }
 }

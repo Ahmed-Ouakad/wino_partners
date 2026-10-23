@@ -5,6 +5,7 @@ import 'package:wino_partners/feature/auth/presentation/bloc/login_event.dart';
 import 'package:wino_partners/feature/auth/presentation/bloc/login_state.dart';
 import 'package:wino_partners/feature/auth/presentation/screens/signup_screen.dart';
 import 'package:wino_partners/feature/home/presentation/screens/main_screen.dart';
+import 'package:wino_partners/feature/onboarding/presentation/screens/onboarding_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -53,10 +54,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   backgroundColor: Colors.green,
                 ),
               );
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const MainScreen()),
-              );
+              if (!state.hasService) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const OnboardingScreen()),
+                );
+              } else {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MainScreen()),
+                );
+              }
             } else if (state is LoginFailure) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(

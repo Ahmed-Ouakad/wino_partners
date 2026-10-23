@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/error/exceptions.dart';
+import '../models/auth_response_model.dart';
 import '../models/login_vendor_model.dart';
 import '../models/register_vendor_model.dart';
 
@@ -12,16 +13,17 @@ import '../models/register_vendor_model.dart';
 abstract class AuthRemoteDataSource {
   /// Calls the POST /auth/register/vendor API endpoint with [model].
   ///
+  /// Returns an [AuthResponseModel] containing tokens and has_service flag.
   /// Throws a [ServerException] on API or remote server errors.
   /// Throws a [NetworkException] on connection failures.
-  Future<void> registerVendor(RegisterVendorModel model);
+  Future<AuthResponseModel> registerVendor(RegisterVendorModel model);
 
   /// Calls the POST /auth/login/vendor API endpoint with [model].
   ///
-  /// Returns a map containing `'access_token'` and `'refresh_token'`.
+  /// Returns an [AuthResponseModel] containing tokens and has_service flag.
   /// Throws a [ServerException] on API or remote server errors.
   /// Throws a [NetworkException] on connection failures.
-  Future<Map<String, String>> loginVendor(LoginVendorModel model);
+  Future<AuthResponseModel> loginVendor(LoginVendorModel model);
 }
 
 /// Implementation of [AuthRemoteDataSource] using the `http` client.
@@ -35,7 +37,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   });
 
   @override
-  Future<void> registerVendor(RegisterVendorModel model) async {
+  Future<AuthResponseModel> registerVendor(RegisterVendorModel model) async {
     final uri = Uri.parse('$baseUrl${ApiConstants.registerVendorEndpoint}');
     final requestBody = jsonEncode(model.toJson());
 
@@ -57,7 +59,18 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        return;
+        try {
+          final dynamic decoded = jsonDecode(response.body);
+          if (decoded is Map<String, dynamic>) {
+            return AuthResponseModel.fromJson(decoded);
+          }
+        } catch (_) {}
+
+        return const AuthResponseModel(
+          hasService: false,
+          accessToken: '',
+          refreshToken: '',
+        );
       } else {
         String errorMessage = 'Server error occurred with status ${response.statusCode}';
         try {
@@ -101,7 +114,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<Map<String, String>> loginVendor(LoginVendorModel model) async {
+  Future<AuthResponseModel> loginVendor(LoginVendorModel model) async {
     final uri = Uri.parse('$baseUrl${ApiConstants.loginVendorEndpoint}');
     final headers = {
       'Content-Type': 'application/json',
@@ -137,36 +150,18 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       print('================================================================');
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        String accessToken = '';
-        String refreshToken = '';
-
         try {
           final dynamic decoded = jsonDecode(response.body);
           if (decoded is Map<String, dynamic>) {
-            final Map<String, dynamic> source =
-                (decoded['data'] is Map<String, dynamic>)
-                    ? decoded['data'] as Map<String, dynamic>
-                    : (decoded['tokens'] is Map<String, dynamic>)
-                        ? decoded['tokens'] as Map<String, dynamic>
-                        : decoded;
-
-            accessToken = (source['access_token'] ??
-                    source['accessToken'] ??
-                    source['token'] ??
-                    '')
-                .toString();
-
-            refreshToken = (source['refresh_token'] ??
-                    source['refreshToken'] ??
-                    '')
-                .toString();
+            return AuthResponseModel.fromJson(decoded);
           }
         } catch (_) {}
 
-        return {
-          'access_token': accessToken,
-          'refresh_token': refreshToken,
-        };
+        return const AuthResponseModel(
+          hasService: false,
+          accessToken: '',
+          refreshToken: '',
+        );
       } else {
         // Parse error message from body if available
         String errorMessage = 'Server error occurred with status ${response.statusCode}';

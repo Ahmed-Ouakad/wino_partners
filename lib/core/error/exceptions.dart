@@ -20,3 +20,13 @@ class NetworkException implements Exception {
   @override
   String toString() => 'NetworkException: $message';
 }
+
+/// Thrown when refresh token is invalid or expired, requiring re-authentication.
+class SessionExpiredException implements Exception {
+  final String message;
+
+  const SessionExpiredException([this.message = 'Session expired. Please log in again.']);
+
+  @override
+  String toString() => 'SessionExpiredException: $message';
+}

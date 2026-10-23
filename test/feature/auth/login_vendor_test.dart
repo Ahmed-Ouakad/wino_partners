@@ -2,7 +2,9 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wino_partners/core/error/failures.dart';
 import 'package:wino_partners/feature/auth/data/models/login_vendor_model.dart';
+import 'package:wino_partners/feature/auth/domain/entities/auth_response.dart';
 import 'package:wino_partners/feature/auth/domain/entities/login_vendor_params.dart';
+import 'package:wino_partners/feature/auth/domain/entities/register_vendor_params.dart';
 import 'package:wino_partners/feature/auth/domain/repositories/auth_repository.dart';
 import 'package:wino_partners/feature/auth/domain/usecases/login_vendor_usecase.dart';
 import 'package:wino_partners/feature/auth/presentation/bloc/login_bloc.dart';
@@ -10,16 +12,16 @@ import 'package:wino_partners/feature/auth/presentation/bloc/login_event.dart';
 import 'package:wino_partners/feature/auth/presentation/bloc/login_state.dart';
 
 class MockAuthRepository implements AuthRepository {
-  Either<Failure, void> loginResult = const Right(null);
+  Either<Failure, AuthResponse> loginResult = const Right(AuthResponse(hasService: false));
 
   @override
-  Future<Either<Failure, void>> loginVendor(LoginVendorParams params) async {
+  Future<Either<Failure, AuthResponse>> loginVendor(LoginVendorParams params) async {
     return loginResult;
   }
 
   @override
-  Future<Either<Failure, void>> registerVendor(covariant dynamic params) async {
-    return const Right(null);
+  Future<Either<Failure, AuthResponse>> registerVendor(RegisterVendorParams params) async {
+    return const Right(AuthResponse(hasService: false));
   }
 }
 
@@ -53,7 +55,7 @@ void main() {
   });
 
   group('LoginVendorUseCase', () {
-    test('should return Right(void) on successful login from repository', () async {
+    test('should return Right(AuthResponse) on successful login from repository', () async {
       final mockRepo = MockAuthRepository();
       final useCase = LoginVendorUseCase(mockRepo);
 
@@ -64,7 +66,7 @@ void main() {
 
       final result = await useCase(params);
 
-      expect(result, const Right(null));
+      expect(result, const Right(AuthResponse(hasService: false)));
     });
 
     test('should return Left(Failure) when repository returns failure', () async {

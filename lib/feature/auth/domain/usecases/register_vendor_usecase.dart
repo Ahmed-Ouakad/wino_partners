@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
+import '../entities/auth_response.dart';
 import '../entities/register_vendor_params.dart';
 import '../repositories/auth_repository.dart';
 
@@ -10,7 +11,7 @@ class RegisterVendorUseCase {
   const RegisterVendorUseCase(this.repository);
 
   /// Executes the vendor registration.
-  Future<Either<Failure, void>> call(RegisterVendorParams params) async {
+  Future<Either<Failure, AuthResponse>> call(RegisterVendorParams params) async {
     return await repository.registerVendor(params);
   }
 }

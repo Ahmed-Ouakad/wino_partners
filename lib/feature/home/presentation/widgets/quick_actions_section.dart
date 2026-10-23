@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../post/presentation/screens/create_reel_screen.dart';
+import '../../../product/presentation/screens/add_product_screen.dart';
 
 class QuickActionsSection extends StatelessWidget {
   const QuickActionsSection({super.key});
@@ -53,24 +55,45 @@ class QuickActionsSection extends StatelessWidget {
               backgroundColor: theme.colorScheme.primary,
               label: 'Nouveau\nProduit',
               theme: theme,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (_) => const AddProductScreen(),
+                  ),
+                );
+              },
             ),
             _buildActionButton(
               icon: Icons.percent_rounded,
               backgroundColor: darkGreen,
               label: 'Nouvelle\nPromo',
               theme: theme,
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Fonctionnalité promo à venir.')),
+                );
+              },
             ),
             _buildActionButton(
               icon: Icons.movie_creation_outlined,
               backgroundColor: theme.colorScheme.primary,
               label: 'Nouveau\nReel',
               theme: theme,
+              onTap: () {
+                CreateReelScreen.showPickerAndOpen(context);
+              },
             ),
             _buildActionButton(
               icon: Icons.play_circle_outline_rounded,
               backgroundColor: darkGreen,
               label: 'Nouvelle\nStory',
               theme: theme,
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Fonctionnalité story à venir.')),
+                );
+              },
             ),
           ],
         ),
@@ -83,43 +106,48 @@ class QuickActionsSection extends StatelessWidget {
     required Color backgroundColor,
     required String label,
     required ThemeData theme,
+    required VoidCallback onTap,
   }) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          width: 58,
-          height: 58,
-          decoration: BoxDecoration(
-            color: backgroundColor,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: backgroundColor.withValues(alpha: 0.28),
-                blurRadius: 8,
-                offset: const Offset(0, 3),
-              ),
-            ],
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(30),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            width: 58,
+            height: 58,
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: backgroundColor.withValues(alpha: 0.28),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Icon(
+              icon,
+              color: Colors.white,
+              size: 26,
+            ),
           ),
-          child: Icon(
-            icon,
-            color: Colors.white,
-            size: 26,
+          const SizedBox(height: 8),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 11.5,
+              fontWeight: FontWeight.w500,
+              height: 1.2,
+              color: theme.colorScheme.onSurface,
+            ),
           ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 11.5,
-            fontWeight: FontWeight.w500,
-            height: 1.2,
-            color: theme.colorScheme.onSurface,
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

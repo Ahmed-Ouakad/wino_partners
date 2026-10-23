@@ -29,7 +29,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
     result.fold(
       (failure) => emit(LoginFailure(failure.message)),
-      (_) => emit(const LoginSuccess()),
+      (authResponse) => emit(LoginSuccess(hasService: authResponse.hasService)),
     );
   }
 }

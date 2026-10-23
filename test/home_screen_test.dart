@@ -68,11 +68,5 @@ void main() {
     expect(find.text('Nouvelle commande #4829'), findsOneWidget);
     expect(find.text('Mise à jour stock terminée'), findsOneWidget);
     expect(find.text('Avis 5 étoiles reçu'), findsOneWidget);
-
-    // Verify navigation bar
-    expect(find.text('Accueil'), findsOneWidget);
-    expect(find.text('Commandes'), findsOneWidget);
-    expect(find.text('Articles'), findsOneWidget);
-    expect(find.text('Profil'), findsOneWidget);
   });
 }

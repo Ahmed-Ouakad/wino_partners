@@ -5,6 +5,13 @@ import 'package:wino_partners/feature/auth/presentation/bloc/login_bloc.dart';
 import 'package:wino_partners/feature/auth/presentation/bloc/register_bloc.dart';
 import 'package:wino_partners/feature/auth/presentation/screens/login_screen.dart';
 import 'package:wino_partners/feature/home/presentation/screens/main_screen.dart';
+import 'package:wino_partners/feature/location/presentation/bloc/location_bloc.dart';
+import 'package:wino_partners/feature/onboarding/presentation/bloc/onboarding_bloc.dart';
+import 'package:wino_partners/feature/post/presentation/bloc/post_list_bloc.dart';
+import 'package:wino_partners/feature/product/presentation/bloc/add_product_bloc.dart';
+import 'package:wino_partners/feature/product/presentation/bloc/product_list_bloc.dart';
+import 'package:wino_partners/feature/profile/presentation/bloc/profile_bloc.dart';
+import 'package:wino_partners/feature/schedule/presentation/bloc/schedule_bloc.dart';
 
 import 'injection_container.dart' as di;
 
@@ -37,6 +44,27 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<LoginBloc>(
           create: (_) => di.sl<LoginBloc>(),
+        ),
+        BlocProvider<OnboardingBloc>(
+          create: (_) => di.sl<OnboardingBloc>(),
+        ),
+        BlocProvider<LocationBloc>(
+          create: (_) => di.sl<LocationBloc>(),
+        ),
+        BlocProvider<ScheduleBloc>(
+          create: (_) => di.sl<ScheduleBloc>(),
+        ),
+        BlocProvider<AddProductBloc>(
+          create: (_) => di.sl<AddProductBloc>(),
+        ),
+        BlocProvider<ProductListBloc>(
+          create: (_) => di.sl<ProductListBloc>(),
+        ),
+        BlocProvider<PostListBloc>(
+          create: (_) => di.sl<PostListBloc>(),
+        ),
+        BlocProvider<ProfileBloc>(
+          create: (_) => di.sl<ProfileBloc>(),
         ),
       ],
       child: MaterialApp(

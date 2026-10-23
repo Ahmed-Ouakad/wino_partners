@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/secure_caching_service.dart';
+import '../../domain/entities/auth_response.dart';
 import '../../domain/entities/login_vendor_params.dart';
 import '../../domain/entities/register_vendor_params.dart';
 import '../../domain/repositories/auth_repository.dart';
@@ -20,11 +21,19 @@ class AuthRepositoryImpl implements AuthRepository {
   });
 
   @override
-  Future<Either<Failure, void>> registerVendor(RegisterVendorParams params) async {
+  Future<Either<Failure, AuthResponse>> registerVendor(RegisterVendorParams params) async {
     try {
       final model = RegisterVendorModel.fromParams(params);
-      await remoteDataSource.registerVendor(model);
-      return const Right(null);
+      final authResponse = await remoteDataSource.registerVendor(model);
+
+      if (authResponse.accessToken.isNotEmpty || authResponse.refreshToken.isNotEmpty) {
+        await secureCachingService.saveTokens(
+          accessToken: authResponse.accessToken,
+          refreshToken: authResponse.refreshToken,
+        );
+      }
+
+      return Right(authResponse);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message, statusCode: e.statusCode));
     } on NetworkException catch (e) {
@@ -35,21 +44,19 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, void>> loginVendor(LoginVendorParams params) async {
+  Future<Either<Failure, AuthResponse>> loginVendor(LoginVendorParams params) async {
     try {
       final model = LoginVendorModel.fromParams(params);
-      final tokens = await remoteDataSource.loginVendor(model);
-      final accessToken = tokens['access_token'] ?? '';
-      final refreshToken = tokens['refresh_token'] ?? '';
+      final authResponse = await remoteDataSource.loginVendor(model);
 
-      if (accessToken.isNotEmpty || refreshToken.isNotEmpty) {
+      if (authResponse.accessToken.isNotEmpty || authResponse.refreshToken.isNotEmpty) {
         await secureCachingService.saveTokens(
-          accessToken: accessToken,
-          refreshToken: refreshToken,
+          accessToken: authResponse.accessToken,
+          refreshToken: authResponse.refreshToken,
         );
       }
 
-      return const Right(null);
+      return Right(authResponse);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message, statusCode: e.statusCode));
     } on NetworkException catch (e) {

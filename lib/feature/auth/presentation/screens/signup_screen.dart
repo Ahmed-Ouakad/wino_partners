@@ -4,6 +4,8 @@ import 'package:wino_partners/feature/auth/presentation/bloc/register_bloc.dart'
 import 'package:wino_partners/feature/auth/presentation/bloc/register_event.dart';
 import 'package:wino_partners/feature/auth/presentation/bloc/register_state.dart';
 import 'package:wino_partners/feature/auth/presentation/screens/login_screen.dart';
+import 'package:wino_partners/feature/home/presentation/screens/main_screen.dart';
+import 'package:wino_partners/feature/onboarding/presentation/screens/onboarding_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -123,14 +125,21 @@ class _SignupScreenState extends State<SignupScreen> {
             if (state is RegisterSuccess) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('Inscription réussie ! Connectez-vous.'),
+                  content: Text('Inscription réussie !'),
                   backgroundColor: Colors.green,
                 ),
               );
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const LoginScreen()),
-              );
+              if (!state.hasService) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const OnboardingScreen()),
+                );
+              } else {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MainScreen()),
+                );
+              }
             } else if (state is RegisterFailure) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(

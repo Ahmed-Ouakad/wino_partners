@@ -56,7 +56,7 @@ class HomeBottomNavBar extends StatelessWidget {
                 theme: theme,
               ),
               // Center Circular Action Button with Plus Icon
-              GestureDetector(
+             /* GestureDetector(
                 onTap: onAddTapped,
                 child: Container(
                   width: 48,
@@ -78,7 +78,7 @@ class HomeBottomNavBar extends StatelessWidget {
                     size: 26,
                   ),
                 ),
-              ),
+              ),*/
               _buildNavItem(
                 index: 2,
                 icon: Icons.inventory_2_outlined,
@@ -88,9 +88,16 @@ class HomeBottomNavBar extends StatelessWidget {
               ),
               _buildNavItem(
                 index: 3,
+                icon: Icons.video_library_outlined,
+                label: 'Média',
+                isActive: selectedIndex == 3,
+                theme: theme,
+              ),
+              _buildNavItem(
+                index: 4,
                 icon: Icons.person_outline_rounded,
                 label: 'Profil',
-                isActive: selectedIndex == 3,
+                isActive: selectedIndex == 4,
                 theme: theme,
               ),
             ],

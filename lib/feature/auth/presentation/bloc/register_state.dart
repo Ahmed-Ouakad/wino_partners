@@ -15,7 +15,19 @@ class RegisterLoading extends RegisterState {
 
 /// State emitted when registration completes successfully.
 class RegisterSuccess extends RegisterState {
-  const RegisterSuccess();
+  final bool hasService;
+
+  const RegisterSuccess({this.hasService = false});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is RegisterSuccess &&
+          runtimeType == other.runtimeType &&
+          hasService == other.hasService;
+
+  @override
+  int get hashCode => hasService.hashCode;
 }
 
 /// State emitted when registration fails, carrying an error [message].
